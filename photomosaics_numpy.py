@@ -36,25 +36,26 @@ def main():
 
             pixel_region = my_image[i:i+square_pixel, j:j+square_pixel]
             pixel_colour = calculate_average_colour(pixel_region)
+            # print(pixel_colour)
+
             new_tile = match_colour_resize_tile(pixel_colour, source_images)
 
             # paste the match_colour tile into the square of the original image
 
-            my_image[i:i+square_pixel, j:j+square_pixel] = [255, 0, 0]
+            my_image[i:i+square_pixel, j:j+square_pixel] = pixel_colour
 
     plt.imshow(my_image)
     plt.show()
 
 def calculate_average_colour(pixel_region):
-    # calculate average rgb values in that tile region
-    # return the average rgb values
-    pass
+    return(np.mean(pixel_region, axis =(0,1)))
+
 
 def match_colour_resize_tile(pixel_colour, source_images):
     # calculates Euclidean distance in rgb colour space
     # gets name of smallest distance image
     # make a copy of the tile, then resize it to the square_pixels size
-    # return to main()
+    # return the name of the resized tile to main()
     pass
 
 def square_source_images():
