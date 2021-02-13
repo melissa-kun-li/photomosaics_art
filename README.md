@@ -1,5 +1,5 @@
 # :framed_picture: :art: Photomosaic Art Creator
-This program will take in an input image (.jpg) and turn it into a photomosaic (.jpg) where each "pixel" is another image (i.e. source image)! The output/photomosaic will be saved as a new copy within the program directory. Within the program, you can specify how large you want the "pixels" to be i.e. how pixellated the photomosaic is.
+This program will take in an input image (.jpg) and turn it into a photomosaic (.jpg) where each "pixel" is another image (the source images, or the images within the ```small_photoset``` folder)! The output/photomosaic will be saved as a new copy within the program directory. Within the program, you can specify how large you want the "pixels" to be i.e. how pixellated the photomosaic is.
 
 **Note**: 
 
@@ -28,3 +28,22 @@ If your input image is ```input.jpg``` and your desired output image name is ```
 
 
 ### 6. After some time, your output image will be in the program directory (saves as a new .jpg) :) 
+
+You can also use your own source images (put in small_photoset folder, if you'd like).
+
+### Examples:
+
+[![doggo.jpg](https://i.postimg.cc/1RDKR6Ry/doggo.jpg)](https://postimg.cc/t7C62sVc)
+
+[![WOOOO.jpg](https://i.postimg.cc/VkvMtbwr/WOOOO.jpg)](https://postimg.cc/4YCmkyms)
+
+[![rsz-img-6638.jpg](https://i.postimg.cc/hGqycqNt/rsz-img-6638.jpg)](https://postimg.cc/XrQcktVR)
+
+[![me-3.jpg](https://i.postimg.cc/fTJgvCxD/me-3.jpg)](https://postimg.cc/VdPRfjGV)
+
+## Photo Credits:
+
+The source images that make up the pixels (in folder small_photoset) are from the [Flowers 1k+](https://www.kaggle.com/arka47/flowers-1k) dataset from Arka Saha on Kaggle.
+
+
+
