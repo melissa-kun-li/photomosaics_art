@@ -1,18 +1,25 @@
-from PIL import Image
 from skimage import io
 import numpy as np
 import matplotlib.pyplot as plt
 from skimage.transform import resize
-import cv2
 from skimage.util import img_as_ubyte
-from skimage import color
+import argparse
 
 def main():
-    # change this value to affect the size of the photomosaic section! NOTE: smaller size will take longer to render
-    square_pixel = 10
+    parser = argparse.ArgumentParser(description = 'Takes in an input photo and a folder of source images, creates a photomosaic where each "pixel" is one source image!')
+    parser.add_argument('square_pixel', type = int, help = 'A larger value indicates larger pixels, a smaller value means the sections of the image will be more subdivided and smaller pixels')
+    parser.add_argument('input_image', type = str, help = 'The file name of the input image e.g. input.jpg, to turn into a photomosaic')
+    parser.add_argument('output_image', type = str, help = 'The file name of the outputted pixel art/photomosaic e.g. photomosaic.jpg')
+    args = parser.parse_args()
 
-    # NOTE: change this string to the name of the file .jpg in the project folder!
-    my_image = io.imread('sammy.jpg')
+    photomosaic(args)
+
+def photomosaic(args):
+    # change this value to affect the size of the photomosaic section! NOTE: smaller size will take longer to render
+    square_pixel = args.square_pixel
+
+    # NOTE: change this string to the name of the input file .jpg in the project folder that you would like to make into a photomosaic!
+    my_image = io.imread(args.input_image)
 
     # NOTE: this is the directory of the source images folder. Future, will let person decide which dir
     photo_dir= './small_photoset/*jpg'
@@ -23,6 +30,8 @@ def main():
     # dictionary where the keys are the filepaths of the source images, and the values are the average rgb values
     source_image_avg_rgb_dict = {}
    
+    print('Loading images...')
+
     # load all the source images (photos you'd like to become the "pixels")
     image_collection = io.imread_collection(photo_dir)
 
@@ -39,8 +48,8 @@ def main():
     trim_rows = my_image.shape[0] % square_pixel
     trim_columns = my_image.shape[1] % square_pixel
     my_image = my_image[0:my_image.shape[0]-trim_rows, 0:my_image.shape[1]-trim_columns]
-    print(my_image.shape) # this prints the height and width of your input image, NOTE: if it's >1000 it will be quite slow. Future: I will optimize
-    print('Creating your photomosaic! Please wait, this can take up to 5 minutes.')
+    print('Your photo height and width are: ', my_image.shape) # this prints the height and width of your input image, NOTE: if it's >1000 it will be quite slow. Future: I will optimize
+    print('Creating your photomosaic! Please wait, this can take up to 5 minutes. If it is not finished after 5 minutes, please resize your photo and/or increase the pixel square size.')
     row = []
     temporary_img = []
 
@@ -74,7 +83,7 @@ def main():
     photomosaic = img_as_ubyte(photomosaic)
 
     # NOTE: change string to the name of the photomosaic you want to save! Future: will use argparser
-    io.imsave('lilsam.jpg', photomosaic)
+    io.imsave(args.output_image, photomosaic)
 
     print('Photomosaic created! Please check this project directory for your image :)')
 
