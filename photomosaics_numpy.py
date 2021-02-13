@@ -3,19 +3,25 @@ from skimage import io
 import numpy as np
 import matplotlib.pyplot as plt
 from skimage.transform import resize
+import cv2
+from skimage.util import img_as_ubyte
+from skimage import color
+
 
 # TO DO:
 # 1. make the pythagoras function/match the average rgbs, return the filename of the matching source image
 # 2. resize the matching source image to the size of the square_pixel
 #       img = resize(my_image, (square_pixel,square_pixel), anti_aliasing=True)
 # 3. paste the image into the location of the pic
+# 4. DONE ABOVE!! Now just need to refine some things
 
 def main():
-    # LET THE USER SET THIS IN FUTURE
-    square_pixel = 50
-    # load input image
-    my_image = io.imread('doggo.jpg')
-    # load source images, future let person decide which dir
+    # change this value to affect the size of the photomosaic section! NOTE: smaller size will take longer to render
+    square_pixel = 10
+    # NOTE: change this string to the name of the file .jpg in the project folder!
+    my_image = io.imread('rsz_img_6638.jpg')
+
+    # NOTE: this is the directory of the source images folder. Future, will let person decide which dir
     photo_dir= './small_photoset/*jpg'
     # dictionary where the keys are the filenames of the source images, and the values are the loaded source_image
     source_images = {}
@@ -25,22 +31,13 @@ def main():
     image_collection = io.imread_collection(photo_dir)
     for filepath in image_collection.files:
         filename = filepath
-        # filename = filepath[len(photo_dir)-4:]
         source_image = io.imread(filepath)
         # crop to square:
         source_images[filename] = square_source_images(source_image)
-        # source_images[filename] = source_image
-
-    # iterate through dictionary, setting img = the loaded image
-    for source_image in source_images:
-        img = source_images[source_image]
- 
-        # set the values of the dictionary with the average rgb colour 
+        img = square_source_images(source_image)
         source_image_avg_rgb_dict[filename] = calculate_average_colour(img)
 
-        # print(list(calculate_average_colour(img)))
-
-
+    # this will allow for all the "pixel" squares to fit equally in the frame
     trim_rows = my_image.shape[0] % square_pixel
     trim_columns = my_image.shape[1] % square_pixel
     print(my_image.shape)
@@ -48,40 +45,41 @@ def main():
     my_image = my_image[0:my_image.shape[0]-trim_rows, 0:my_image.shape[1]-trim_columns]
     print(my_image.shape)
 
+    row = []
+    temporary_img = []
+
     for i in range(0, my_image.shape[0], square_pixel):
         for j in range(0, my_image.shape[1], square_pixel):
-            # instead of setting to red, call the function that calculates avg RGB in the square_pixel
-            # then call the function that compares the average RGB to the source images
-            # then crop the source images into a square and resize to the square_pixel dimensions
-            # then replace that part of the original with the "new pixel"
-            # done? 
 
             pixel_region = my_image[i:i+square_pixel, j:j+square_pixel]
             pixel_colour = calculate_average_colour(pixel_region)
-            # print(pixel_colour)
 
-            new_tile = match_colour_resize_tile(pixel_colour, source_image_avg_rgb_dict)
+            best_match = match_colour(pixel_colour, source_image_avg_rgb_dict)
 
-            resized_tile = match_image_resize(new_tile, square_pixel)
+            img = io.imread(best_match)
+            img = resize(img, (square_pixel,square_pixel), anti_aliasing=True)
 
-            # paste the match_colour tile into the square of the original image
+            # the commented code below can give you a picture where the pixels are the average colour!
+            # my_image[i:i+square_pixel, j:j+square_pixel] = pixel_colour
+            
+            row.append(img)
+        temporary_img.append(np.hstack(row))
+        row = []
+    photomosaic = np.vstack(temporary_img)  
 
-            my_image[i:i+square_pixel, j:j+square_pixel] = pixel_colour
+    # converts image to uint8 to suppress the warning that there's lossy conversion
+    photomosaic=img_as_ubyte(photomosaic)
+
+    # NOTE: change string to the name of the photomosaic you want to save! Future: will set this as an arg
+    io.imsave('me_3.jpg', photomosaic)
 
 
-    plt.imshow(my_image)
-    plt.show()
-
-# list turns [1 2 3] to [1, 2, 3] so that I can match avg rgb colours easier
 def calculate_average_colour(pixel_region):
+    # list turns [1 2 3] to [1, 2, 3] so that I can match avg rgb colours easier
     return(list(np.mean(pixel_region, axis =(0,1))))
 
-# def load_source_images():
-#     images = []
-#     image_collection = skimage.io.imread_collection('./small_photoset/*jpg')
-
-
-def match_colour_resize_tile(pixel_colour, source_image_avg_rgb_dict):
+# 
+def match_colour(pixel_colour, source_image_avg_rgb_dict):
     smallest_distance = None
     best_match = None
     for filename in source_image_avg_rgb_dict:
@@ -107,9 +105,10 @@ def square_source_images(source_img):
         source_img = source_img[:, 0:new_width]
         return source_img
 
-def match_image_resize(new_tile, square_pixel):
+def match_image_resize(new_tile, square_pixel, source_images):
     img = io.imread(new_tile)
     img = resize(img, (square_pixel,square_pixel), anti_aliasing=True)
+
     return img
 
 if __name__ == '__main__':
