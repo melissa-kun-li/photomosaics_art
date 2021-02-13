@@ -6,10 +6,10 @@ from skimage.util import img_as_ubyte
 import argparse
 
 def main():
-    parser = argparse.ArgumentParser(description = 'Takes in an input photo and a folder of source images, creates a photomosaic where each "pixel" is one source image!')
-    parser.add_argument('square_pixel', type = int, help = 'A larger value indicates larger pixels, a smaller value means the sections of the image will be more subdivided and smaller pixels')
-    parser.add_argument('input_image', type = str, help = 'The file name of the input image e.g. input.jpg, to turn into a photomosaic')
-    parser.add_argument('output_image', type = str, help = 'The file name of the outputted pixel art/photomosaic e.g. photomosaic.jpg')
+    parser = argparse.ArgumentParser(description = 'Takes in an input photo (.jpg) and a folder of source images (.jpg), creates a photomosaic where each "pixel" is one source image!')
+    parser.add_argument('square_pixel', type = int, help = 'A larger value indicates the photomosaic will be made of larger pixels/fewer source images, a smaller value means the sections of the image will be more subdivided and smaller pixels/more source images used.')
+    parser.add_argument('input_image', type = str, help = 'The file name of the input image e.g. input.jpg, to turn into a photomosaic.')
+    parser.add_argument('output_image', type = str, help = 'The file name of the outputted pixel art/photomosaic e.g. photomosaic.jpg. This will be saved in the program directory.')
     args = parser.parse_args()
 
     photomosaic(args)
