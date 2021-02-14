@@ -1,4 +1,7 @@
 # :framed_picture: :art: Photomosaic Art Creator
+
+## :tada: Won 1st place at HackHer413 :)
+
 This program will take in an input image (.jpg) and turn it into a photomosaic (.jpg) where each "pixel" is another image (the source images, or the images within the ```small_photoset``` folder)! The output/photomosaic will be saved as a new copy within the program directory. Within the program, you can specify how large you want the "pixels" to be i.e. how pixellated the photomosaic is.
 
 **Note**: 
